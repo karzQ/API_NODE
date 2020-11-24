@@ -8,5 +8,5 @@ module.exports = (server) => {
     server.route('/comments/:comment_id')
         .get(commentController.get_one_comment)
         .put(commentController.update_a_comment)
-        // .delete(commentController.delete_a_comment)
+        .delete(commentController.delete_a_comment)
 }

@@ -62,6 +62,7 @@ exports.update_a_comment = (req, res) => {
 
 exports.delete_a_comment = (req, res) => {
     const id = req.params.comment_id;
+
     Comment.findByIdAndRemove(id, (err, comment) => {
         if (err) {
             res.status(500);
