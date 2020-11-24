@@ -1,5 +1,7 @@
 const Comment = require('../models/commentModel');
 const Post = require('../models/postModel');
+const jwt = require('jsonwebtoken');
+const JWT_KEY = process.env.JWT_KEY;
 
 exports.list_all_post_comments = (req, res) => {
     // Effectue un where post_id === req.params.post_id
@@ -44,28 +46,12 @@ exports.list_all_comments = (req, res) => {
 }
 
 
+
 exports.create_a_comment = (req, res) => {
 
     // Normalement on fait déjà un get de l'élément parent avant de save.
     // Donc vérifier que le Post, identifié par le post_id existe, si c'est le cas, faire un save.
-
-    /* 
-        const new_comment = new Comment({
-            ...req.body,
-            post_id: req.params.post_id
-        });
-        
-        new_comment.save((err, comment) => {
-        if (err) {
-            res.status(500);
-            res.json({message: 'Internal server error.'});
-        } else {
-            res.status(201);
-            res.json(comment);
-            console.log('Successfully created the comment : ', comment);
-        }
-    }) */
-
+    
     Post.findById(req.params.post_id, (err, post) => {
         if (err) {
             console.log('ERRROR - Post not found');
@@ -73,9 +59,10 @@ exports.create_a_comment = (req, res) => {
             res.json({message: 'Internal server error.'});
         } else if (post) {
             console.log('Post found');
-
+            const payload = jwt.decode(req.headers['authorization']);
             const new_comment = new Comment({
                 ...req.body,
+                name: payload.email,
                 post_id: req.params.post_id
             });
 

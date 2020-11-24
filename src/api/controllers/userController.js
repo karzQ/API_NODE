@@ -34,9 +34,9 @@ exports.create_an_user = async (req, res) => {
 const decryptPassword = async (inputPassword, userPassword) => {
     // Compare la valeur du password hashé et celle en plaintext.
     bcrypt.compare(inputPassword, userPassword, (err, result) => {
-        console.log('Input pwd: ', inputPassword);
+        /* console.log('Input pwd: ', inputPassword);
         console.log('User pwd: ', userPassword);
-        console.log("Result: ", result);
+        console.log("Result: ", result); */
         return result;
     });
 }
