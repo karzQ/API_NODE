@@ -1,20 +1,28 @@
+require('dotenv').config();
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const validator = require("email-validator");
 
 exports.create_an_user = (req, res) => {
-    let new_user = new User(req.body);
+    if (!validator.validate(req.body.email)) {
+        res.status(400);
+        res.json({
+            message: "Your email don't have a good format"
+        })
+    } else {
+        let new_user = new User(req.body);
 
-    new_user.save((err, user) => {
-        if (err) {
-            res.status(500);
-            res.json({message: 'Internal server error.'});
-        } else {
-            res.status(201);
-            res.json({message: `Utilisateur créé : ${user.email}`});
-            console.log("User successfully created !");
-        }
-    });
+        new_user.save((err, user) => {
+            if (err) {
+                res.status(500);
+                res.json({message: 'Internal server error.'});
+            } else {
+                res.status(201);
+                res.json({message: `Utilisateur créé : ${user.email}`});
+                console.log("User successfully created !");
+            }
+        });
+    }
 }
 
 exports.login_an_user = (req, res) => {
