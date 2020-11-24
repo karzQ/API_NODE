@@ -2,15 +2,21 @@ require('dotenv').config();
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const validator = require("email-validator");
+const bcrypt = require('bcrypt');
 
-exports.create_an_user = (req, res) => {
+exports.create_an_user = async (req, res) => {
     if (!validator.validate(req.body.email)) {
         res.status(400);
         res.json({
             message: "Your email don't have a good format"
         })
     } else {
-        let new_user = new User(req.body);
+        // Encrypte le password
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        let userObj = {email : req.body.email, password: hashedPassword}
+        let new_user = new User(userObj);
+
+        console.log(new_user);
 
         new_user.save((err, user) => {
             if (err) {
@@ -25,13 +31,23 @@ exports.create_an_user = (req, res) => {
     }
 }
 
+const decryptPassword = async (inputPassword, userPassword) => {
+    // Compare la valeur du password hashé et celle en plaintext.
+    bcrypt.compare(inputPassword, userPassword, (err, result) => {
+        console.log('Input pwd: ', inputPassword);
+        console.log('User pwd: ', userPassword);
+        console.log("Result: ", result);
+        return result;
+    });
+}
+
 exports.login_an_user = (req, res) => {
     User.findOne({email: req.body.email}, (err, user) => {
         if (err) {
             res.status(500);
             res.json({message: 'Internal server error.'});
         } else {
-            if (user.password === req.body.password) {
+            if (decryptPassword(req.body.password, user.password)) {
                 // On crée un nouveau jeton d'accès
                 jwt.sign({
                     email: user.email,
