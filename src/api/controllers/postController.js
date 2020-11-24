@@ -57,10 +57,7 @@ exports.create_a_post = async (req, res) => {
 
     if (!req.body.content) {
         const content = await axios.get("https://loripsum.net/api/plaintext");
-        // console.log(content.data);
         obj_post = {...obj_post, content: content.data};
-    } else {
-        console.log(req.body);
     }
     
     const new_post = new Post(obj_post);
