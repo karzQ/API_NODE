@@ -1,5 +1,6 @@
 const Post = require('../models/postModel');
 const axios = require('axios');
+const { base } = require('../models/postModel');
 
 // Works
 exports.list_all_post = (req, res) => {
@@ -52,11 +53,16 @@ exports.get_one_post = (req, res) => {
     });
 } */
 
+const loremApiProvider = require('../providers/loremApiProvider');
+
+// Ma version
 exports.create_a_post = async (req, res) => {
     let obj_post = {...req.body};
 
     if (!req.body.content) {
-        const content = await axios.get("https://loripsum.net/api/plaintext");
+        const baseUrl = "https://loripsum.net/api";
+        const content = await axios.get(`${baseUrl}/plaintext`, {responseType: "text"});
+        
         obj_post = {...obj_post, content: content.data};
     }
     

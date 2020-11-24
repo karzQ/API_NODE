@@ -1,8 +1,9 @@
 module.exports = (server) => {
     const commentController = require('../controllers/commentController');
+    const jwtMiddleware = require('../middleware/jwtMiddleware');
 
     server.route('/posts/:post_id/comments')
-        .post(commentController.create_a_comment)
+        .post(jwtMiddleware.verify_token, commentController.create_a_comment)
         .get(commentController.list_all_post_comments)
         
     server.route('/comments/:comment_id')
