@@ -3,10 +3,11 @@ module.exports = (server) => {
 
     server.route('/posts/:post_id/comments')
         .post(commentController.create_a_comment)
-        .get(commentController.list_all_comments)
+        .get(commentController.list_all_post_comments)
         
     server.route('/comments/:comment_id')
         .get(commentController.get_one_comment)
+        .get(commentController.list_all_comments)
         .put(commentController.update_a_comment)
         .delete(commentController.delete_a_comment)
 }
